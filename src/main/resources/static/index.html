@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Requests</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        label, input {
+            display: block;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        label {
+            font-weight: bold;
+        }
+        .container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        .container > div {
+            flex: 1;
+            margin-right: 10px;
+            padding-right: 10px;
+        }
+        .container > div:last-child {
+            margin-right: 10px;
+            padding-left: 10px;
+        }
+        textarea {
+            width: 100%;
+            height: 220px;
+            padding: 10px;
+        }
+        #url {
+            width: 100%;
+            border-left: none;
+            border-right: none;
+            border-top: none;
+            padding: 6px 0 6px 0;
+            border-bottom-width: 1px;
+            margin-bottom: 20px;
+        }
+        #status {
+            margin-left: 10px;
+            margin-top: -40px;
+            color: #585858;
+        }
+        button {
+            background-color: green;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;    /* Change cursor to pointer when hovering over the button */
+            border-radius: 5px; /* Optional: adds rounded corners */
+        }
+
+        /* Optional: Add hover effect */
+        button:hover {
+            background-color: darkgreen;
+        }
+        iframe {
+            width: 100%;
+            height: 600px;
+            border: 1px solid #ccc;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<input type="text" id="url" name="url" value="http://localhost:8080/users" required>
+
+<div class="container">
+    <div>
+        <label for="requestBody">Request Body (JSON):</label>
+        <textarea id="requestBody" name="requestBody" required>
+{
+  "name": "David Aldana",
+  "email": "david@nasa.com",
+  "password": "eWork1ing!",
+  "phones": [
+    {
+      "number": "6540987",
+      "cityCode": "321",
+      "countryCode": "57"
+    }
+  ]
+}
+        </textarea>
+    </div>
+    <div>
+        <label for="response">Response Body:</label>
+        <textarea id="response" readonly></textarea>
+    </div>
+</div>
+
+<div class="container">
+    <div>
+        <button id="sendRequest">Send Request</button>
+    </div>
+    <div>
+        <div id="status">Status Code: <span id="statusCode"></span></div>
+    </div>
+</div>
+
+<iframe src="http://localhost:8080/h2-console"></iframe>
+
+<script>
+    document.getElementById('sendRequest').addEventListener('click', function() {
+        const url = document.getElementById('url').value;
+        const requestBody = document.getElementById('requestBody').value;
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: requestBody
+        })
+            .then(response => {
+                document.getElementById('statusCode').textContent = response.status;
+                return response.json().catch(() => response.text());  // Handle both JSON and text responses
+            })
+            .then(data => {
+                document.getElementById('response').value = typeof data === 'string' ? data : JSON.stringify(data, null, 2);
+            })
+            .catch((error) => {
+                document.getElementById('statusCode').textContent = 'Error';
+                document.getElementById('response').value = error;
+            });
+    });
+</script>
+</body>
+</html>

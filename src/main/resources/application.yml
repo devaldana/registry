@@ -1,0 +1,31 @@
+spring:
+  datasource:
+    url: jdbc:h2:~/test
+    username: sa
+    password:
+  jpa:
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+  sql:
+    init:
+      mode: always
+  h2:
+    console:
+      enabled: true
+      settings:
+        web-allow-others: true
+logging:
+  level:
+    com:
+      univercenter: DEBUG
+    org:
+      hibernate: INFO
+services:
+  registry:
+    # At least: one upper case, one lower case, one digit, one special character, and a length of eight.
+    password-regex: "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$"
